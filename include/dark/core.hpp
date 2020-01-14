@@ -16,7 +16,7 @@
 
 namespace dk {
 
-    using KeyCode = SDL_Keycode;
+    using KeyCode = SDL_Scancode;
     using MouseCode = uint32_t;
     
     template<typename T>

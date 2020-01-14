@@ -73,22 +73,20 @@ namespace dk {
                     }
                     break;
                 }
+                case SDL_TEXTINPUT:{
+                    auto txt = evt->text.text;
+                    auto e = KeyTypedEvent(txt);
+                    props.EventCallback(e);
+                    break;
+                }
                 case SDL_KEYDOWN:{
                     auto e = KeyPressedEvent(evt->key.keysym.scancode,evt->key.repeat);
                     props.EventCallback(e);
-                    if( evt->key.keysym.mod == KMOD_NONE ){
-                        auto e2 = KeyTypedEvent(evt->key.keysym.scancode);
-                        props.EventCallback(e2);
-                    }
                     break;
                 }
                 case SDL_KEYUP:{
                     auto e = KeyReleasedEvent(evt->key.keysym.scancode);
                     props.EventCallback(e);
-                    if( evt->key.keysym.mod == KMOD_NONE ){
-                        auto e2 = KeyTypedEvent(evt->key.keysym.scancode);
-                        props.EventCallback(e2);
-                    }
                     break;
                 }
                 case SDL_MOUSEMOTION:{

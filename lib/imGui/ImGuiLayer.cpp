@@ -55,6 +55,7 @@ namespace dk{
         dis.Dispatch<MouseMovedEvent>([&](auto& e){ return this->OnMouseMovedEvent(e);});
         dis.Dispatch<KeyReleasedEvent>([&](auto& e){ return this->OnKeyReleasedEvent(e);});
         dis.Dispatch<KeyPressedEvent>([&](auto& e){ return this->OnKeyPressedEvent(e);});
+        dis.Dispatch<KeyTypedEvent>([&](auto& e){ return this->OnKeyTypedEvent(e);});
         dis.Dispatch<WindowCloseEvent>([&](auto& e){ return this->OnWindowCloseEvent(e);});
         dis.Dispatch<WindowResizeEvent>([&](auto& e){ return this->OnWindowResizeEvent(e);});
     }
@@ -87,19 +88,29 @@ namespace dk{
 
     bool ImGuiLayer::OnWindowCloseEvent(WindowCloseEvent& e){
         ImGuiIO& io = ImGui::GetIO();
-
+        ImGui_ImplSDL2_Shutdown();
         return false;
     }
 
     bool ImGuiLayer::OnKeyReleasedEvent(KeyReleasedEvent& e){
         ImGuiIO& io = ImGui::GetIO();
+        io.KeysDown[e.GetKeyCode()] = false;
+        return false;
+    }
+    bool ImGuiLayer::OnKeyTypedEvent(KeyTypedEvent& e){
+        ImGuiIO& io = ImGui::GetIO();
+        io.AddInputCharactersUTF8(e.GetData());
 
         return false;
     }
 
     bool ImGuiLayer::OnKeyPressedEvent(KeyPressedEvent& e){
         ImGuiIO& io = ImGui::GetIO();
-
+        io.KeysDown[e.GetKeyCode()] = true;
+        io.KeyCtrl  = io.KeysDown[SDL_SCANCODE_RCTRL]   || io.KeysDown[SDL_SCANCODE_LCTRL];
+        io.KeyAlt   = io.KeysDown[SDL_SCANCODE_RALT]    || io.KeysDown[SDL_SCANCODE_LALT];
+        io.KeyShift  = io.KeysDown[SDL_SCANCODE_RSHIFT] || io.KeysDown[SDL_SCANCODE_LSHIFT];
+        io.KeySuper  = io.KeysDown[SDL_SCANCODE_RGUI]   || io.KeysDown[SDL_SCANCODE_LGUI];
         return false;
     }
 
