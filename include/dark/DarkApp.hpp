@@ -17,6 +17,11 @@ namespace dk{
 
         void PushLayer( Ref<Layer> layer );
         void PushOverlay( Ref<Layer> overlay );
+        inline static Dark& Get() noexcept { 
+            CoreAssert(s_instance != nullptr, "App is not initilized"); 
+            return *s_instance; 
+        }
+        constexpr base_window& GetWindow() const noexcept { return *m_window; }
 
     private:
         bool onWindowClose(WindowCloseEvent& e);
@@ -25,6 +30,8 @@ namespace dk{
         bool m_running{true};
         LayerStack m_layerStack;
         float m_lastFrame{.0f};
+    private:
+        static Dark* s_instance;
     };
 
     Scope<Dark> CreateApplication();

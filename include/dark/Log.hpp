@@ -74,6 +74,30 @@ namespace dk{
         using BaseLog::Fatal;
         CoreLog() = delete;
     };
+
+    template<typename... Args>
+    auto CoreAssert(bool cond, Args&... args){
+        if constexpr( Config::is_debug ){
+            if( !cond ){
+                CoreLog::Fatal(std::forward<Args>(args)...);   
+                return false;
+            }else{
+                return true;
+            }
+        }
+    }
+
+    template<typename... Args>
+    auto ClientAssert(bool cond, Args&... args){
+        if constexpr( Config::is_debug ){
+            if( !cond ){
+                CoreLog::Fatal(std::forward<Args>(args)...);   
+                return false;
+            }else{
+                return true;
+            }
+        }
+    }
 }
 
 #endif // DK_LOG_HPP

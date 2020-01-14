@@ -20,7 +20,7 @@ namespace dk {
 namespace dk::detail{
     template<typename T>
     struct WindowBase{
-
+        using window_type = T;
         using EventCallbackFn = std::function<void(EventBase&)>;
 
         virtual ~WindowBase() = default;
@@ -32,7 +32,7 @@ namespace dk::detail{
         virtual void SetVSync( bool enable ) = 0;
         virtual bool IsVSync() const = 0;
 
-        virtual T* GetNativeWindow() const = 0;
+        virtual T* GetNativeWindow() = 0;
 
         inline static Scope<WindowBase> Create( WindowsProps const& props = WindowsProps() ){
             return CreateScope<Window>(props);
@@ -43,6 +43,8 @@ namespace dk::detail{
 namespace dk{
     struct Window : detail::WindowBase<SDL_Window>{
         using detail::WindowBase<SDL_Window>::Create;
+        using window_type = SDL_Window;
+
         Window( WindowsProps const& props );
         virtual ~Window();
 
@@ -56,7 +58,9 @@ namespace dk{
         void SetVSync(bool enabled) override;
         bool IsVSync() const override;
 
-        inline SDL_Window* GetNativeWindow() const override{ return m_win.get(); }
+        inline SDL_Window* GetNativeWindow() override{ return m_win.get(); }
+        constexpr SDL_GLContext GetContext(){ return m_cxt; }
+        constexpr SDL_Event& GetEvent(){ return m_event; }
 
         auto Assert(bool cond, std::string title, std::string_view msg){
             if constexpr( Config::is_debug ){

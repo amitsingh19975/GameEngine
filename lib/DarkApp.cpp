@@ -1,7 +1,12 @@
 #include "dark/DarkApp.hpp"
 
 namespace dk{
+
+    Dark* Dark::s_instance = nullptr;
+
     Dark::Dark(): m_window(Window::Create()){
+        CoreAssert(s_instance == nullptr,"Application is already initialized");
+        s_instance = this;
         m_window->SetEventCallback(std::bind(&Dark::onEvent,this,std::placeholders::_1));
     }
     
@@ -24,7 +29,6 @@ namespace dk{
     void Dark::Run(){
         CoreLog::Info("Starting Window");
         while(m_running){
-            
             float time = SDL_GetTicks()/ 1000.f;
             Timestep ts = time - m_lastFrame;
             m_lastFrame = time;
@@ -37,9 +41,10 @@ namespace dk{
             }
             m_window->OnUpdate();
         }
+        CoreLog::Error("Window Closed");
     }
 
-    bool Dark::onWindowClose(WindowCloseEvent&){
+    bool Dark::onWindowClose(WindowCloseEvent& e){
         m_running = false;
         return true;
     }
@@ -47,6 +52,7 @@ namespace dk{
     void Dark::PushLayer( Ref<Layer> layer ){
         m_layerStack.PushLayer(layer);
         layer->OnAttach();
+        CoreLog::Info("{0} Layer has been attached",layer->GetName());
     }
 
     void Dark::PushOverlay( Ref<Layer> overlay ){

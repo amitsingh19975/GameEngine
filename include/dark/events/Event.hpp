@@ -48,7 +48,7 @@ namespace dk {
         EventDispatcher( EventBase& event ): m_event(event){}
 
         template<typename T, typename P>
-        constexpr auto Dispatch( const P& pred ){
+        constexpr auto Dispatch( P const& pred ){
             if ( m_event.GetEventType() == T::GetStaticType() ){
                 m_event.Handled = pred(static_cast<T&>(m_event));
                 return true;

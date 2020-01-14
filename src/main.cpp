@@ -15,6 +15,7 @@ struct ExLayer : dk::Layer{
 struct Sandbox : public dk::Dark{
     Sandbox() {
         PushLayer(dk::CreateRef<ExLayer>());
+        PushOverlay(dk::CreateRef<dk::ImGuiLayer>());
     }
 
     ~Sandbox(){

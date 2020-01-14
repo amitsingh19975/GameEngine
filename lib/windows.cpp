@@ -16,9 +16,13 @@ namespace dk {
         m_data.Title = props.Title;
         m_data.windowId = SDL_GetWindowID(this->m_win.get());
 
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,3);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,1);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute (SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+        SDL_GL_SetAttribute (SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
         CoreLog::Info("Creating Window {0} ({1}, {2})",props.Title,props.Width,props.Height);
 
@@ -39,8 +43,12 @@ namespace dk {
 
         m_cxt = SDL_GL_CreateContext(m_win.get());
         Window::Assert(m_cxt != nullptr, "Init Failed","OpenGL context could not be created: ");
+        
+        SDL_GL_MakeCurrent(m_win.get(),m_cxt);
 
         Window::Assert( gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress), "Init Failed", "Failed to initialize the OpenGL context: " );
+
+        glViewport(0,0,m_data.Width, m_data.Height);
 
         SDL_AddEventWatch([](void* userdata, SDL_Event* evt)->int{
             auto& props = *static_cast<Window::WindowData*>(userdata);
@@ -66,13 +74,21 @@ namespace dk {
                     break;
                 }
                 case SDL_KEYDOWN:{
-                    auto e = KeyPressedEvent(evt->key.keysym.sym,evt->key.repeat);
+                    auto e = KeyPressedEvent(evt->key.keysym.scancode,evt->key.repeat);
                     props.EventCallback(e);
+                    if( evt->key.keysym.mod == KMOD_NONE ){
+                        auto e2 = KeyTypedEvent(evt->key.keysym.scancode);
+                        props.EventCallback(e2);
+                    }
                     break;
                 }
                 case SDL_KEYUP:{
-                    auto e = KeyReleasedEvent(evt->key.keysym.sym);
+                    auto e = KeyReleasedEvent(evt->key.keysym.scancode);
                     props.EventCallback(e);
+                    if( evt->key.keysym.mod == KMOD_NONE ){
+                        auto e2 = KeyTypedEvent(evt->key.keysym.scancode);
+                        props.EventCallback(e2);
+                    }
                     break;
                 }
                 case SDL_MOUSEMOTION:{
@@ -104,6 +120,8 @@ namespace dk {
 
             return 0;
         },&m_data);
+        CoreLog::Info("OpenGL Version: {0}", glGetString(GL_VERSION));
+        CoreLog::Info("Shader Version: {0}", glGetString(GL_SHADING_LANGUAGE_VERSION));
         SetVSync(true);
     }
 
