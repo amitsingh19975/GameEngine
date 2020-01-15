@@ -1,9 +1,9 @@
 #if !defined(DK_DARKAPP_HPP)
 #define DK_DARKAPP_HPP
 
-#include "windows.hpp"
-#include "Log.hpp"
-#include "LayerStack.hpp"
+#include "dark/core/windows.hpp"
+#include "dark/core/Log.hpp"
+#include "dark/core/LayerStack.hpp"
 
 namespace dk{
     class Dark{

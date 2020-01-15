@@ -29,7 +29,6 @@ namespace dk{
     }
 
     void ImGuiLayer::OnUpdate( Timestep ts) {
-        dk::ClientLog::Info("Layer Name: {0}, Frame: {1}", GetName(), ts);
         auto& win = Dark::Get().GetWindow();
         ImGuiIO& io = ImGui::GetIO();
         
@@ -63,7 +62,7 @@ namespace dk{
     bool ImGuiLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e){
         ImGuiIO& io = ImGui::GetIO();
         io.MouseDown[e.GetMouseButton()] = true;
-        CoreLog::Warn("Mouse Btn {0} is pressed : {1}",e.GetMouseButton(),io.MouseDown[e.GetMouseButton()]);
+        CoreLog::Warn("Layer Name{0} | Mouse Button: {1}", GetName(), e.GetMouseButton());
         return false;     
     }
 
@@ -86,8 +85,7 @@ namespace dk{
         return false;
     }
 
-    bool ImGuiLayer::OnWindowCloseEvent(WindowCloseEvent& e){
-        ImGuiIO& io = ImGui::GetIO();
+    bool ImGuiLayer::OnWindowCloseEvent(WindowCloseEvent&){
         ImGui_ImplSDL2_Shutdown();
         return false;
     }
@@ -100,7 +98,6 @@ namespace dk{
     bool ImGuiLayer::OnKeyTypedEvent(KeyTypedEvent& e){
         ImGuiIO& io = ImGui::GetIO();
         io.AddInputCharactersUTF8(e.GetData());
-
         return false;
     }
 

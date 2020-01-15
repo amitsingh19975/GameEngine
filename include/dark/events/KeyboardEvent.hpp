@@ -39,8 +39,8 @@ namespace dk{
 
     struct KeyTypedEvent : KeyEvent<EventType::KeyTyped> {
 
-        KeyTypedEvent( std::string_view data )
-            : KeyEvent(SDL_SCANCODE_UNKNOWN),m_data(data){;
+        KeyTypedEvent( KeyCode kc, std::string_view data )
+            : KeyEvent(kc),m_data(data){;
             }
         
         char const* GetData() const noexcept {
@@ -49,7 +49,7 @@ namespace dk{
 
         std::string ToString() const override{
 			std::stringstream ss;
-			ss << "KeyTypedEvent: " << m_keyCode;
+			ss << "KeyTypedEvent: " << m_data;
 			return ss.str();
 		}
     private:

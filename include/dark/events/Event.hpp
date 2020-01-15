@@ -1,7 +1,7 @@
 #if !defined(DK_EVENT_HPP)
 #define DK_EVENT_HPP
 
-#include "dark/core.hpp"
+#include "dark/core/Core.hpp"
 
 namespace dk {
     enum class EventType{

@@ -30,7 +30,7 @@
 //  2016-09-05: OpenGL: Fixed save and restore of current scissor rectangle.
 
 #include "imgui.h"
-#include "dark/Config.hpp"
+#include "dark/core/Config.hpp"
 #include "dark/openGL/imgui_impl_opengl2.h"
 #if defined(_MSC_VER) && _MSC_VER <= 1500 // MSVC 2008 or earlier
 #include <stddef.h>     // intptr_t

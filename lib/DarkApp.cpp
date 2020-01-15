@@ -1,4 +1,5 @@
 #include "dark/DarkApp.hpp"
+#include "dark/platform/WindowsInput.hpp"
 
 namespace dk{
 
@@ -35,7 +36,6 @@ namespace dk{
             
             glClearColor(1.0f,1.0f,1.0f, 1.f);
             glClear( GL_COLOR_BUFFER_BIT );
-
             for( auto& layer : m_layerStack ){
                 layer->OnUpdate(ts);
             }

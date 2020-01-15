@@ -1,8 +1,8 @@
 #if !defined(DK_LAYER_STACK_HPP)
 #define DK_LAYER_STACK_HPP
 
-#include "core.hpp"
-#include "Layer.hpp"
+#include "dark/core/Core.hpp"
+#include "dark/core/Layer.hpp"
 
 namespace dk{
     struct LayerStack{

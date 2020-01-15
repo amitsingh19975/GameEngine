@@ -1,9 +1,9 @@
 #if !defined(DK_LAYER_HPP)
 #define DK_LAYER_HPP
 
-#include "core.hpp"
-#include "events/Event.hpp"
-#include "Timestep.hpp"
+#include "dark/core/Core.hpp"
+#include "dark/core/Timestep.hpp"
+#include "dark/events/Event.hpp"
 
 namespace dk{
     struct Layer{

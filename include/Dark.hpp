@@ -2,11 +2,11 @@
 #define DK_DARK_HPP
 
 #include "dark/DarkApp.hpp"
-#include "dark/Log.hpp"
-#include "dark/windows.hpp"
-#include "dark/LayerStack.hpp"
+#include "dark/core/Log.hpp"
+#include "dark/core/windows.hpp"
+#include "dark/core/LayerStack.hpp"
 #include "dark/imGui/ImGuiLayer.hpp"
 
-#include "dark/EntryPoint.hpp"
+#include "dark/core/EntryPoint.hpp"
 
 #endif // DK_DARK_HPP

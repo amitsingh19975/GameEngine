@@ -1,11 +1,11 @@
 #if !defined(DK_WINDOWS_HPP)
 #define DK_WINDOWS_HPP
 
-#include "core.hpp"
-#include "Log.hpp"
-#include "events/AppEvent.hpp"
-#include "events/KeyboardEvent.hpp"
-#include "events/MouseEvent.hpp"
+#include "dark/core/Core.hpp"
+#include "dark/core/Log.hpp"
+#include "dark/events/AppEvent.hpp"
+#include "dark/events/KeyboardEvent.hpp"
+#include "dark/events/MouseEvent.hpp"
 
 namespace dk {
     struct WindowsProps{

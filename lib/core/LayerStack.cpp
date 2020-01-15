@@ -1,10 +1,9 @@
-#include "dark/LayerStack.hpp"
+#include "dark/core/LayerStack.hpp"
 
 namespace dk{
     LayerStack::~LayerStack(){
         std::for_each(begin(),end(),[](LayerStack::value_type& layer){
             layer->OnDetach();
-            layer.~shared_ptr();
         });
     }
 

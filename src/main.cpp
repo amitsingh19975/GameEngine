@@ -4,7 +4,7 @@ struct ExLayer : dk::Layer{
     ExLayer() : Layer("ExLayer"){}
 
     void OnUpdate( dk::Timestep ts ) override{
-        dk::ClientLog::Info("Layer Name: {0}, Frame: {1}", GetName(), ts);
+        // dk::ClientLog::Info("Layer Name: {0}, Frame: {1}", GetName(), ts);
     }
 
     void OnEvent( dk::EventBase& e ) override{

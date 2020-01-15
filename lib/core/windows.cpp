@@ -1,4 +1,4 @@
-#include "dark/windows.hpp"
+#include "dark/core/windows.hpp"
 #include <type_traits>
 
 namespace dk {
@@ -48,8 +48,6 @@ namespace dk {
 
         Window::Assert( gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress), "Init Failed", "Failed to initialize the OpenGL context: " );
 
-        glViewport(0,0,m_data.Width, m_data.Height);
-
         SDL_AddEventWatch([](void* userdata, SDL_Event* evt)->int{
             auto& props = *static_cast<Window::WindowData*>(userdata);
             switch(evt->type){
@@ -75,17 +73,20 @@ namespace dk {
                 }
                 case SDL_TEXTINPUT:{
                     auto txt = evt->text.text;
-                    auto e = KeyTypedEvent(txt);
+                    auto k = SDLKeyCodeToDKKeyCode(evt->key.keysym.scancode);
+                    auto e = KeyTypedEvent(k,txt);
                     props.EventCallback(e);
                     break;
                 }
                 case SDL_KEYDOWN:{
-                    auto e = KeyPressedEvent(evt->key.keysym.scancode,evt->key.repeat);
+                    auto k = SDLKeyCodeToDKKeyCode(evt->key.keysym.scancode);
+                    auto e = KeyPressedEvent(k,evt->key.repeat);
                     props.EventCallback(e);
                     break;
                 }
                 case SDL_KEYUP:{
-                    auto e = KeyReleasedEvent(evt->key.keysym.scancode);
+                    auto k = SDLKeyCodeToDKKeyCode(evt->key.keysym.scancode);
+                    auto e = KeyReleasedEvent(k);
                     props.EventCallback(e);
                     break;
                 }
@@ -100,12 +101,14 @@ namespace dk {
                     break;
                 }
                 case SDL_MOUSEBUTTONDOWN:{
-                    auto e = MouseButtonPressedEvent(evt->button.type);
+                    auto b = SDLMouseCodeToDKMouseCode(evt->button.button);
+                    auto e = MouseButtonPressedEvent(b);
                     props.EventCallback(e);
                     break;
                 }
                 case SDL_MOUSEBUTTONUP:{
-                    auto e = MouseButtonReleasedEvent(evt->button.type);
+                    auto b = SDLMouseCodeToDKMouseCode(evt->button.button);
+                    auto e = MouseButtonReleasedEvent(b);
                     props.EventCallback(e);
                     break;
                 }
