@@ -5,10 +5,11 @@ namespace dk{
 
     Dark* Dark::s_instance = nullptr;
 
-    Dark::Dark(): m_window(Window::Create()){
+    Dark::Dark(): m_window(Window::Create()), m_imGuiLayer(new ImGuiLayer()){
         CoreAssert(s_instance == nullptr,"Application is already initialized");
         s_instance = this;
         m_window->SetEventCallback(std::bind(&Dark::onEvent,this,std::placeholders::_1));
+        PushOverlay(m_imGuiLayer);
     }
     
     Dark::~Dark(){}
@@ -36,15 +37,22 @@ namespace dk{
             
             glClearColor(1.0f,1.0f,1.0f, 1.f);
             glClear( GL_COLOR_BUFFER_BIT );
+
             for( auto& layer : m_layerStack ){
                 layer->OnUpdate(ts);
             }
+
+            m_imGuiLayer->Begin();
+            for( auto& layer : m_layerStack ){
+                layer->ImGuiRenderer();
+            }
+            m_imGuiLayer->End();
             m_window->OnUpdate();
         }
         CoreLog::Error("Window Closed");
     }
 
-    bool Dark::onWindowClose(WindowCloseEvent& e){
+    bool Dark::onWindowClose(WindowCloseEvent&){
         m_running = false;
         return true;
     }

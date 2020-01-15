@@ -6,6 +6,7 @@
 #include "dark/events/AppEvent.hpp"
 #include "dark/events/KeyboardEvent.hpp"
 #include "dark/events/MouseEvent.hpp"
+#include "dark/platform/openGL/OpenGLContext.hpp"
 
 namespace dk {
     struct WindowsProps{
@@ -44,6 +45,7 @@ namespace dk{
     struct Window : detail::WindowBase<SDL_Window>{
         using detail::WindowBase<SDL_Window>::Create;
         using window_type = SDL_Window;
+        using context_type = GraphicsContext;
 
         Window( WindowsProps const& props );
         virtual ~Window();
@@ -59,7 +61,9 @@ namespace dk{
         bool IsVSync() const override;
 
         inline SDL_Window* GetNativeWindow() override{ return m_win.get(); }
-        constexpr SDL_GLContext GetContext(){ return m_cxt; }
+        constexpr SDL_GLContext GetContext(){ 
+            return static_cast<OpenGLContext<SDL_Window>&>(*m_ctx).GetSDLContext(); 
+        }
         constexpr SDL_Event& GetEvent(){ return m_event; }
 
         auto Assert(bool cond, std::string title, std::string_view msg){
@@ -96,10 +100,8 @@ namespace dk{
 
     private:
         Ref<SDL_Window> m_win;
-
-
+        Ref< context_type > m_ctx;
         WindowData m_data;
-        SDL_GLContext m_cxt;
         SDL_Event m_event;
     };
 }

@@ -41,12 +41,13 @@ namespace dk {
         m_win = Ref<SDL_Window>(win,SDL_DestroyWindow);
         CoreLog::Info("SDL Window Created Successfully");
 
-        m_cxt = SDL_GL_CreateContext(m_win.get());
-        Window::Assert(m_cxt != nullptr, "Init Failed","OpenGL context could not be created: ");
+        auto ctx = SDL_GL_CreateContext(m_win.get());
+        Window::Assert(ctx, "Init Failed","OpenGL context could not be created: ");
         
-        SDL_GL_MakeCurrent(m_win.get(),m_cxt);
+        SDL_GL_MakeCurrent(m_win.get(),ctx);
 
-        Window::Assert( gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress), "Init Failed", "Failed to initialize the OpenGL context: " );
+        m_ctx = CreateRef< OpenGLContext<SDL_Window> >( m_win, ctx ); 
+        m_ctx->Init();
 
         SDL_AddEventWatch([](void* userdata, SDL_Event* evt)->int{
             auto& props = *static_cast<Window::WindowData*>(userdata);
@@ -132,7 +133,7 @@ namespace dk {
 
     void Window::OnUpdate(){
         SDL_PollEvent(&m_event);
-        SDL_GL_SwapWindow(m_win.get());
+        m_ctx->SwapBuffers();
     }
 
     void Window::SetVSync( bool enabled ){

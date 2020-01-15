@@ -11,6 +11,7 @@
 #include <ostream>
 #include <utility>
 #include <glad/glad.h>
+#include <OpenGL/OpenGL.h>
 #include <SDL2/SDL.h>
 #include "dark/core/Config.hpp"
 #include "dark/core/KeyCode.hpp"

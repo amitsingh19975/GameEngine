@@ -15,6 +15,7 @@ namespace dk{
         virtual void OnDetach() {}
         virtual void OnUpdate( Timestep ) {}
         virtual void OnEvent( EventBase& ) {}
+        virtual void ImGuiRenderer() {}
 
         constexpr std::string const& GetName() const { return m_debugName; }
     private:

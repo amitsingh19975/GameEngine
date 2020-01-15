@@ -11,20 +11,12 @@ namespace dk{
         ImGuiLayer();
         ~ImGuiLayer() = default;
 
-        void OnUpdate(Timestep ts) override;
         void OnAttach() override;
         void OnDetach() override;
-    private:
-        bool OnMouseButtonPressedEvent(MouseButtonPressedEvent&);
-        bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent&);
-        bool OnMouseScrolledEvent(MouseScrolledEvent&);
-        bool OnMouseMovedEvent(MouseMovedEvent&);
-        bool OnKeyReleasedEvent(KeyReleasedEvent&);
-        bool OnKeyPressedEvent(KeyPressedEvent&);
-        bool OnKeyTypedEvent(KeyTypedEvent&);
-        bool OnWindowCloseEvent(WindowCloseEvent&);
-        bool OnWindowResizeEvent(WindowResizeEvent&);
-        void OnEvent(EventBase& e) override;
+        void ImGuiRenderer() override;
+
+        void Begin();
+        void End();
     };
 }
 

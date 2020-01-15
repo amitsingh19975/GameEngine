@@ -4,6 +4,7 @@
 #include "dark/core/windows.hpp"
 #include "dark/core/Log.hpp"
 #include "dark/core/LayerStack.hpp"
+#include "dark/imGui/ImGuiLayer.hpp"
 
 namespace dk{
     class Dark{
@@ -27,8 +28,9 @@ namespace dk{
         bool onWindowClose(WindowCloseEvent& e);
     private:
         Scope<base_window> m_window;
-        bool m_running{true};
+        Ref<ImGuiLayer> m_imGuiLayer;
         LayerStack m_layerStack;
+        bool m_running{true};
         float m_lastFrame{.0f};
     private:
         static Dark* s_instance;
