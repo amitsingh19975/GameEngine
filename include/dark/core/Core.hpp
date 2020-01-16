@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <vector>
 #include <functional>
+#include <initializer_list>
 #include <ostream>
 #include <utility>
 #include "glad/glad.h"

@@ -6,6 +6,7 @@
 #include "dark/core/LayerStack.hpp"
 #include "dark/imGui/ImGuiLayer.hpp"
 #include "dark/renderer/Shader.hpp"
+#include "dark/renderer/Buffer.hpp"
 
 namespace dk{
     class Dark{
@@ -34,9 +35,9 @@ namespace dk{
         bool                m_running{true};
         float               m_lastFrame{.0f};
         uint32_t            m_vertexArray;
-        uint32_t            m_vertexBuffer;
-        uint32_t            m_indexBuffer;
+        Scope<IndexBuffer>   m_indexBuffer;
         Scope<Shader>       m_shader;
+        Scope<VertexBuffer> m_vertexBuffer;
     private:
         static Dark* s_instance;
     };

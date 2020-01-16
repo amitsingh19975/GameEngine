@@ -5,6 +5,27 @@ namespace dk{
 
     Dark* Dark::s_instance = nullptr;
 
+    static GLenum ShaderDataTypeToOpenGLType( ShaderDataType type){
+        switch ( type ){
+            case ShaderDataType::Float  : 
+            case ShaderDataType::Float2 : 
+            case ShaderDataType::Float3 : 
+            case ShaderDataType::Mat2   : 
+            case ShaderDataType::Mat3   : 
+            case ShaderDataType::Mat4   : 
+            case ShaderDataType::Float4 : return GL_FLOAT;
+            case ShaderDataType::Int    : 
+            case ShaderDataType::Int2   : 
+            case ShaderDataType::Int3   : 
+            case ShaderDataType::Int4   : return GL_INT;
+            case ShaderDataType::Bool   : return GL_BOOL;
+            default : {
+                CoreAssert(false, "Unknown Data Type");
+                return GL_NONE;
+            }
+        }
+    }
+
     Dark::Dark(): m_window(Window::Create()), m_imGuiLayer(new ImGuiLayer()){
         CoreAssert(s_instance == nullptr,"Application is already initialized");
         s_instance = this;
@@ -13,46 +34,62 @@ namespace dk{
         
         std::string vertexSrc = R"(
             attribute vec3 a_Pos;
+            attribute vec4 a_Col;
+            varying vec4 v_Col;
             void main(){
-                gl_Position = vec4(a_Pos,1.0);
+                v_Col = a_Col;
+                gl_Position = vec4(a_Pos ,1.0);
             }
         )";
 
         std::string fragmentSrc = R"(
+            varying vec4 v_Col;
             void main(){
-                gl_FragColor = vec4(1,0.2,0.3,1.0);
+                gl_FragColor = v_Col;
             }
         )";
 
         DKGenVertexArrays(1,&m_vertexArray);
         DKBindVertexArray(m_vertexArray);
-        
-        glGenBuffers(1,&m_vertexBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER,m_vertexBuffer);
 
-        float vertices[] = {
-            -0.5f, -0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-             0.0f,  0.5f, 0.0f
+        typename VertexBuffer::value_type vertices[] = {
+            -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.f,
+             0.5f, -0.5f, 0.0f, 0.5f, 0.8f, 0.2f, 1.f,
+             0.0f,  0.5f, 0.0f, 0.2f, 0.3f, 0.6f, 1.f
         };
 
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-
-        glGenBuffers(1,&m_indexBuffer);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,m_indexBuffer);
-
-        uint32_t indices[] = {
-            0,1,2
-        };
-
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+        m_vertexBuffer = VertexBuffer::Create(vertices,sizeof(vertices));
+        {
+            BufferLayout lay = {
+                {ShaderDataType::Float3, "a_Pos"},
+                {ShaderDataType::Float4, "a_Color"}
+            };
+            
+            m_vertexBuffer->SetLayout(lay);
+        }
+        auto idx = 0ul;
 
         m_shader = CreateScope<Shader>(vertexSrc, fragmentSrc);
-        m_shader->BindAttribute(0,"a_Pos");
+
+        CoreLog::Info("Shader Compiled");
+        
+        for(auto const& el : m_vertexBuffer->GetLayout() ){
+            glEnableVertexAttribArray(idx);
+            glVertexAttribPointer(idx, el.GetComponentCount() 
+                ,ShaderDataTypeToOpenGLType(el.type) 
+                ,el.normalized ? GL_TRUE : GL_FALSE 
+                ,m_vertexBuffer->GetLayout().GetStride() 
+                ,reinterpret_cast<const void*>(el.offset)
+            );
+            // m_shader->BindAttribute(idx,el.name);
+            ++idx;
+        }
+
+
+        typename IndexBuffer::value_type indices[] = {
+            0,1,2
+        };
+        m_indexBuffer = IndexBuffer::Create(indices, sizeof(indices) / IndexBuffer::value_size);
     }
     
     Dark::~Dark(){}
@@ -80,11 +117,8 @@ namespace dk{
             m_shader->Bind();
             glClearColor(0.1f,.1f,.1f, 1.f);
             glClear( GL_COLOR_BUFFER_BIT );
-            // glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-            // glEnableClientState(GL_NORMAL_ARRAY);
-            // glVertexPointer(3,GL_FLOAT, sizeof(GLfloat) * 3, nullptr );
             DKBindVertexArray(m_vertexArray);
-            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+            glDrawElements(GL_TRIANGLES, m_indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
 
             for( auto& layer : m_layerStack ){
                 layer->OnUpdate(ts);
