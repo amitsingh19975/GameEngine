@@ -51,7 +51,7 @@ namespace dk{
             inline static void Fatal(Args&&... args){
                 if constexpr( Config::is_debug ){
                     Error("( Fatal ) {0}",std::forward<Args>(args)...);
-                    abort();
+                    exit(1);
                 }
             }
             static Ref<spdlog::logger> m_logger;

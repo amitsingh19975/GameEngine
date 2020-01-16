@@ -52,6 +52,7 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
 add_compile_definitions(DEBUG)
+add_compile_definitions(GL_SILENCE_DEPRECATION)
 
 add_subdirectory(lib)
 add_subdirectory(src)

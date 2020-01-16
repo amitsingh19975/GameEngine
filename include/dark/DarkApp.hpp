@@ -5,6 +5,7 @@
 #include "dark/core/Log.hpp"
 #include "dark/core/LayerStack.hpp"
 #include "dark/imGui/ImGuiLayer.hpp"
+#include "dark/renderer/Shader.hpp"
 
 namespace dk{
     class Dark{
@@ -27,11 +28,15 @@ namespace dk{
     private:
         bool onWindowClose(WindowCloseEvent& e);
     private:
-        Scope<base_window> m_window;
-        Ref<ImGuiLayer> m_imGuiLayer;
-        LayerStack m_layerStack;
-        bool m_running{true};
-        float m_lastFrame{.0f};
+        Scope<base_window>  m_window;
+        Ref<ImGuiLayer>     m_imGuiLayer;
+        LayerStack          m_layerStack;
+        bool                m_running{true};
+        float               m_lastFrame{.0f};
+        uint32_t            m_vertexArray;
+        uint32_t            m_vertexBuffer;
+        uint32_t            m_indexBuffer;
+        Scope<Shader>       m_shader;
     private:
         static Dark* s_instance;
     };

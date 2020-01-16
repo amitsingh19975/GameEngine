@@ -1,7 +1,7 @@
 #include "imgui.h"
 #include "dark/imGui/ImGuiLayer.hpp"
 #include "dark/DarkApp.hpp"
-#include "examples/imgui_impl_opengl2.h"
+#include "examples/imgui_impl_opengl3.h"
 #include "examples/imgui_impl_sdl.h"
 
 namespace dk{
@@ -31,11 +31,11 @@ namespace dk{
             Window& win = static_cast<Window&>(app);
             ImGui_ImplSDL2_InitForOpenGL(win.GetNativeWindow(),win.GetContext());
         }
-        CoreAssert( ImGui_ImplOpenGL2_Init(), "ImGui is unable to set glsl version" );
+        CoreAssert( ImGui_ImplOpenGL3_Init("#version 120"), "ImGui is unable to set glsl version" );
     }
 
     void ImGuiLayer::OnDetach() {
-        ImGui_ImplOpenGL2_Shutdown();
+        ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplSDL2_Shutdown();
         ImGui::DestroyContext();
     }
@@ -48,7 +48,7 @@ namespace dk{
     void ImGuiLayer::Begin(){
         auto& win = Dark::Get().GetWindow();
 
-        ImGui_ImplOpenGL2_NewFrame();
+        ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame(win.GetNativeWindow());
         ImGui::NewFrame();
     }
@@ -59,7 +59,7 @@ namespace dk{
         io.DisplaySize = ImVec2(app.GetWidth() , app.GetHeight());
 
         ImGui::Render();
-        ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         if( io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable ){
             using type = std::decay_t<decltype(app)>;

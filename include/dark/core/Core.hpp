@@ -10,13 +10,11 @@
 #include <functional>
 #include <ostream>
 #include <utility>
-#include <glad/glad.h>
-#include <OpenGL/OpenGL.h>
+#include "glad/glad.h"
 #include <SDL2/SDL.h>
 #include "dark/core/Config.hpp"
 #include "dark/core/KeyCode.hpp"
 #include "dark/core/MouseCode.hpp"
-
 
 namespace dk {
     
@@ -62,6 +60,33 @@ namespace dk {
 
     constexpr MouseCode DKButton(uint8_t b){
         return SDLMouseCodeToDKMouseCode(SDL_BUTTON(b));
+    }
+
+    template<typename...Args>
+    void DKGenVertexArrays(Args&&... args){
+        if constexpr( Config::os == OS::MACOS ){
+            glGenVertexArraysAPPLE(std::forward<Args>(args)...);
+        }else{
+            glGenVertexArrays(std::forward<Args>(args)...);
+        }
+    }
+
+    template<typename...Args>
+    void DKBindVertexArray(Args&&... args){
+        if constexpr( Config::os == OS::MACOS ){
+            glBindVertexArrayAPPLE(std::forward<Args>(args)...);
+        }else{
+            glBindVertexArray(std::forward<Args>(args)...);
+        }
+    }
+
+    template<typename...Args>
+    void DKDeleteVertexBuffer(Args&&... args){
+        if constexpr( Config::os == OS::MACOS ){
+            glDeleteVertexArraysAPPLE(std::forward<Args>(args)...);
+        }else{
+            glDeleteVertexArrays(std::forward<Args>(args)...);
+        }
     }
 }
 

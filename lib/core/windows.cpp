@@ -21,7 +21,7 @@ namespace dk {
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
         CoreLog::Info("Creating Window {0} ({1}, {2})",props.Title,props.Width,props.Height);
@@ -53,23 +53,23 @@ namespace dk {
             auto& props = *static_cast<Window::WindowData*>(userdata);
             switch(evt->type){
                 case SDL_WINDOWEVENT:{
-                    if( evt->window.windowID == props.windowId ){
-                        auto& temp_w = evt->window;
-                        switch(temp_w.event){
-                            case SDL_WINDOWEVENT_SIZE_CHANGED:{
-                                props.Height = temp_w.data2;
-                                props.Width = temp_w.data1;
-                                auto e = WindowResizeEvent(props.Width,props.Height);
-                                props.EventCallback(e);
-                                break;
-                            }
-                            case SDL_WINDOWEVENT_CLOSE:{
-                                auto e = WindowCloseEvent();
-                                props.EventCallback(e);
-                                break;
-                            }
+                    // if( evt->window.windowID == props.windowId ){
+                    auto& temp_w = evt->window;
+                    switch(temp_w.event){
+                        case SDL_WINDOWEVENT_SIZE_CHANGED:{
+                            props.Height = temp_w.data2;
+                            props.Width = temp_w.data1;
+                            auto e = WindowResizeEvent(props.Width,props.Height);
+                            props.EventCallback(e);
+                            break;
+                        }
+                        case SDL_WINDOWEVENT_CLOSE:{
+                            auto e = WindowCloseEvent();
+                            props.EventCallback(e);
+                            break;
                         }
                     }
+                    // }
                     break;
                 }
                 case SDL_TEXTINPUT:{
@@ -130,7 +130,6 @@ namespace dk {
     void Window::Shutdown(){
         m_win.~shared_ptr();
     }
-
     void Window::OnUpdate(){
         SDL_PollEvent(&m_event);
         m_ctx->SwapBuffers();
