@@ -1,3 +1,6 @@
+#if !defined(DK_SHADER_HPP)
+#define DK_SHADER_HPP
+
 #include <string>
 
 namespace dk{
@@ -16,3 +19,5 @@ namespace dk{
         uint32_t m_renderID;
     };
 }
+
+#endif // DK_SHADER_HPP

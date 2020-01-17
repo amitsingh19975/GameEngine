@@ -1,10 +1,9 @@
 #if !defined(DK_LOG_HPP)
 #define DK_LOG_HPP
 
-#include <memory>
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
-#include "dark/core/Core.hpp"
+#include "dark/core/SmartPointer.hpp"
 
 namespace dk{
 

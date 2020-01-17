@@ -6,18 +6,18 @@
 
 namespace dk{
     
-    Scope<VertexBuffer> VertexBuffer::Create( value_type* vertices, size_type size ){
+    Ref<VertexBuffer> VertexBuffer::Create( value_type* vertices, size_type size ){
         switch (Renderer::GetAPI()){
             case RendererAPI::None: CoreAssert(false,"VertexBuffer::Create : RendererAPI::None is currently not supported");
-            case RendererAPI::OpenGL : return CreateScope<OpenGLVertexBuffer>(vertices,size);
+            case RendererAPI::OpenGL : return CreateRef<OpenGLVertexBuffer>(vertices,size);
             default : CoreAssert(false,"VertexBuffer::Create : Unknown RendererAPI"); 
         }
     }   
 
-    Scope<IndexBuffer> IndexBuffer::Create( value_type* indices, count_type count ){
+    Ref<IndexBuffer> IndexBuffer::Create( value_type* indices, count_type count ){
         switch (Renderer::GetAPI()){
             case RendererAPI::None: CoreAssert(false,"VertexBuffer::Create : RendererAPI::None is currently not supported");
-            case RendererAPI::OpenGL : return CreateScope<OpenGLIndexBuffer>(indices,count);
+            case RendererAPI::OpenGL : return CreateRef<OpenGLIndexBuffer>(indices,count);
             default : CoreAssert(false,"VertexBuffer::Create : Unknown RendererAPI"); 
         }
     }

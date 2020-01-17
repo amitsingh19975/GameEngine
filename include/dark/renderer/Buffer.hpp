@@ -108,6 +108,8 @@ namespace dk{
         const_reverse_iterator rbegin() const { return m_elements.rbegin(); }
         const_reverse_iterator rend() const { return m_elements.rend(); }
 
+        constexpr auto empty() const noexcept { return m_elements.empty(); }
+
     private:
         void CalculateOffsetAndStride() noexcept{
             offset_type offset = 0;
@@ -126,7 +128,7 @@ namespace dk{
     struct VertexBuffer{
         using value_type = float;
         using size_type = uint32_t;
-        using rendererID_type = uint32_t;
+        using renderer_id_type = uint32_t;
 
         constexpr static auto value_size = sizeof(value_type);
 
@@ -138,14 +140,14 @@ namespace dk{
         virtual BufferLayout const& GetLayout() const noexcept= 0;
         virtual void SetLayout( BufferLayout const& layout) noexcept= 0;
 
-        static Scope<VertexBuffer> Create( float* vertices, uint32_t size );
+        static Ref<VertexBuffer> Create( float* vertices, uint32_t size );
 
     };
 
     struct IndexBuffer{
         using value_type = uint32_t;
         using count_type = uint32_t;
-        using rendererID_type = uint32_t;
+        using renderer_id_type = uint32_t;
         
         constexpr static auto value_size = sizeof(value_type);
 
@@ -156,7 +158,7 @@ namespace dk{
 
         virtual value_type GetCount() const noexcept = 0;
         
-        static Scope<IndexBuffer> Create( value_type* indices, count_type count );
+        static Ref<IndexBuffer> Create( value_type* indices, count_type count );
     };
 }
 

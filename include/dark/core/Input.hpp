@@ -20,23 +20,23 @@ namespace dk{
 
         inline static bool IsKeyPressed( KeyCode key ) { 
             CoreAssert(s_instance != nullptr, "Input instance is initialized");
-            return s_instance->IsKeyPressedImpl(key); 
+            return Deref(s_instance).IsKeyPressedImpl(key); 
         }
         inline static bool IsMouseButtonPressed( MouseCode button ) { 
             CoreAssert(s_instance != nullptr, "Input instance is initialized");
-            return s_instance->IsMouseButtonPressedImpl(button); 
+            return Deref(s_instance).IsMouseButtonPressedImpl(button); 
         }
         inline static mouse_position_type GetMousePosition() { 
             CoreAssert(s_instance != nullptr, "Input instance is initialized");
-            return s_instance->GetMousePositionImpl(); 
+            return Deref(s_instance).GetMousePositionImpl(); 
         }
         inline static float GetMouseX() { 
             CoreAssert(s_instance != nullptr, "Input instance is initialized");
-            return s_instance->GetMouseXImpl(); 
+            return Deref(s_instance).GetMouseXImpl(); 
         }
         inline static float GetMouseY() { 
             CoreAssert(s_instance != nullptr, "Input instance is initialized");
-            return s_instance->GetMouseYImpl(); 
+            return Deref(s_instance).GetMouseYImpl(); 
         }
 
         static Scope<Input> Create();

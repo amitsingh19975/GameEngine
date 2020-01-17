@@ -10,7 +10,7 @@ int main(int argc, char** argv){
     dk::detail::Log::Init();
     dk::CoreLog::Info("Dark initialized!");
     auto app = dk::CreateApplication();
-    app->Run();
+    Deref(app).Run();
     return 0;
 }
 
