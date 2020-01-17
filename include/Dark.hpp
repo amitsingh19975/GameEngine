@@ -12,6 +12,7 @@
 #include "dark/renderer/RenderCommand.hpp"
 #include "dark/renderer/Shader.hpp"
 #include "dark/renderer/VertexArray.hpp"
+#include "dark/platform/WindowsInput.hpp"
 
 #include "dark/core/EntryPoint.hpp"
 

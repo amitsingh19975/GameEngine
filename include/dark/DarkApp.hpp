@@ -36,9 +36,6 @@ namespace dk{
         LayerStack          m_layerStack;
         bool                m_running{true};
         float               m_lastFrame{.0f};
-        Ref<VertexArray>    m_vertexArray;
-        Ref<Shader>         m_shader;
-        OrthographicCamera  m_camera;
     private:
         static Dark* s_instance;
     };
