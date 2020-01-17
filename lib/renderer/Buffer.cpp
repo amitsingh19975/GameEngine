@@ -8,16 +8,16 @@ namespace dk{
     
     Ref<VertexBuffer> VertexBuffer::Create( value_type* vertices, size_type size ){
         switch (Renderer::GetAPI()){
-            case RendererAPI::None: CoreAssert(false,"VertexBuffer::Create : RendererAPI::None is currently not supported");
-            case RendererAPI::OpenGL : return CreateRef<OpenGLVertexBuffer>(vertices,size);
+            case RendererAPI::API::None: CoreAssert(false,"VertexBuffer::Create : RendererAPI::None is currently not supported");
+            case RendererAPI::API::OpenGL : return CreateRef<OpenGLVertexBuffer>(vertices,size);
             default : CoreAssert(false,"VertexBuffer::Create : Unknown RendererAPI"); 
         }
     }   
 
     Ref<IndexBuffer> IndexBuffer::Create( value_type* indices, count_type count ){
         switch (Renderer::GetAPI()){
-            case RendererAPI::None: CoreAssert(false,"VertexBuffer::Create : RendererAPI::None is currently not supported");
-            case RendererAPI::OpenGL : return CreateRef<OpenGLIndexBuffer>(indices,count);
+            case RendererAPI::API::None: CoreAssert(false,"VertexBuffer::Create : RendererAPI::None is currently not supported");
+            case RendererAPI::API::OpenGL : return CreateRef<OpenGLIndexBuffer>(indices,count);
             default : CoreAssert(false,"VertexBuffer::Create : Unknown RendererAPI"); 
         }
     }

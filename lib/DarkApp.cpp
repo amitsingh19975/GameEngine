@@ -1,11 +1,16 @@
 #include "dark/DarkApp.hpp"
 #include "dark/platform/WindowsInput.hpp"
-
+#include "dark/renderer/Renderer.hpp"
+#include "dark/renderer/RenderCommand.hpp"
 namespace dk{
 
     Dark* Dark::s_instance = nullptr;
 
-    Dark::Dark(): m_window(Window::Create()), m_imGuiLayer(new ImGuiLayer()){
+    Dark::Dark()
+        : m_window(Window::Create())
+        , m_imGuiLayer(new ImGuiLayer())
+        , m_camera(-1.f, 1.f, -.7f, .7f)
+    {
         CoreAssert(s_instance == nullptr,"Application is already initialized");
         s_instance = this;
         Deref(m_window).SetEventCallback(std::bind(&Dark::onEvent,this,std::placeholders::_1));
@@ -15,9 +20,12 @@ namespace dk{
             attribute vec3 a_Pos;
             attribute vec4 a_Col;
             varying vec4 v_Col;
+
+            uniform mat4 u_ViewProjection;
+
             void main(){
                 v_Col = a_Col;
-                gl_Position = vec4(a_Pos ,1.0);
+                gl_Position = u_ViewProjection * vec4(a_Pos ,1.0);
             }
         )";
 
@@ -28,10 +36,11 @@ namespace dk{
             }
         )";
 
-        typename VertexBuffer::value_type vertices[] = {
+        typename VertexBuffer::value_type vertices[4 * 7] = {
             -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.f,
              0.5f, -0.5f, 0.0f, 0.5f, 0.8f, 0.2f, 1.f,
-             0.0f,  0.5f, 0.0f, 0.2f, 0.3f, 0.6f, 1.f
+             0.5f,  0.5f, 0.0f, 0.2f, 0.3f, 0.6f, 1.f,
+            -0.5f,  0.5f, 0.0f, 0.5f, 0.3f, 0.6f, 1.f
         };
 
         auto vertexBuffer = VertexBuffer::Create(vertices,sizeof(vertices));
@@ -40,7 +49,6 @@ namespace dk{
                 {ShaderDataType::Float3, "a_Pos"},
                 {ShaderDataType::Float4, "a_Color"}
             };
-            
             Deref(vertexBuffer).SetLayout(lay);
         }
 
@@ -49,14 +57,14 @@ namespace dk{
         CoreLog::Info("Shader Compiled");
 
         typename IndexBuffer::value_type indices[] = {
-            0,1,2
+            0,1,2,2,3,0
         };
         auto indexBuffer = IndexBuffer::Create(indices, sizeof(indices) / IndexBuffer::value_size);
         
         m_vertexArray = VertexArray::Create();
         Deref(m_vertexArray).AddVertexBuffer(vertexBuffer);
         Deref(m_vertexArray).SetIndexBuffer(indexBuffer);
-        Deref(m_vertexArray).BindAttribute(m_shader);
+        // Deref(m_vertexArray).BindAttribute(m_shader);
 
 
     }
@@ -65,7 +73,7 @@ namespace dk{
 
     void Dark::onEvent( EventBase& e ){
         EventDispatcher disp(e);
-        CoreLog::Info(e);
+        // CoreLog::Info(e);
         
         disp.Dispatch<WindowCloseEvent>(
             std::bind(&Dark::onWindowClose,this,std::placeholders::_1)
@@ -79,18 +87,43 @@ namespace dk{
 
     void Dark::Run(){
         CoreLog::Info("Starting Window");
+        
+        glm::vec3 pos(0,0,0);
+        float rotate = 0;
+
         while(m_running){
-            float time = SDL_GetTicks()/ 1000.f;
-            Timestep ts = time - m_lastFrame;
-            m_lastFrame = time;
-            Deref(m_shader).Bind();
-            glClearColor(0.1f,.1f,.1f, 1.f);
-            glClear( GL_COLOR_BUFFER_BIT );
-            Deref(m_vertexArray).Bind();
-            glDrawElements(GL_TRIANGLES, Deref( Deref(m_vertexArray).GetIndexBuffer() ).GetCount(), GL_UNSIGNED_INT, nullptr);
+            // float time = SDL_GetTicks()/ 1000.f;
+            // Timestep ts = time - m_lastFrame;
+            // m_lastFrame = time;
+
+            RenderCommand::SetClearColor(0.1f,.1f,.1f, 1.f);
+            RenderCommand::Clear();
+
+            if( WindowsInput::IsKeyPressed(DK_KEY_W) ){
+                pos[1] -= 0.1; 
+            }else if ( WindowsInput::IsKeyPressed(DK_KEY_A) ){
+                pos[0] += 0.1; 
+            }else if ( WindowsInput::IsKeyPressed(DK_KEY_S) ){
+                pos[1] += 0.1;
+            }else if (WindowsInput::IsKeyPressed(DK_KEY_D)){
+                pos[0] -= 0.1;
+            }else if( WindowsInput::IsKeyPressed(DK_KEY_R) ){
+                rotate += 1;
+            }else if (WindowsInput::IsKeyPressed(DK_KEY_L)){
+                rotate -= 1;
+            }
+
+            m_camera.SetPostion(pos);
+            m_camera.SetRotation(rotate);
+
+            Renderer::BeginScene(m_camera);
+
+                Renderer::Submit(m_shader,m_vertexArray);
+
+            Renderer::EndScene();
 
             for( auto& layer : m_layerStack ){
-                Deref(layer).OnUpdate(ts);
+                Deref(layer).OnUpdate(Timestep{});
             }
 
             Deref(m_imGuiLayer).Begin();

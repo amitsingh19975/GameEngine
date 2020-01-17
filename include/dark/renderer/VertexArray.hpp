@@ -22,7 +22,7 @@ namespace dk{
         virtual index_buffer_type const& GetIndexBuffer() const noexcept = 0;
         virtual void BindAttribute( Ref<Shader> const& ) const noexcept {}
         virtual void BindAttribute( size_type,  Ref<Shader> const& ) const noexcept{}
-        static Scope<VertexArray> Create();
+        static Ref<VertexArray> Create();
 
     };
 }

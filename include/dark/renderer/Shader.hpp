@@ -2,6 +2,7 @@
 #define DK_SHADER_HPP
 
 #include <string>
+#include "glm/glm.hpp"
 
 namespace dk{
     struct Shader {
@@ -12,6 +13,8 @@ namespace dk{
 
         void Bind() const noexcept;
         void UnBind() const noexcept;
+
+        void UploadUniformMat4(std::string_view name, glm::mat4 const& uniform) const noexcept;
 
         constexpr auto GetRenderID() const noexcept{ return m_renderID; }
 

@@ -8,6 +8,7 @@
 #include "dark/renderer/Shader.hpp"
 #include "dark/renderer/Buffer.hpp"
 #include "dark/renderer/VertexArray.hpp"
+#include "dark/renderer/OrthographicCamera.hpp"
 
 namespace dk{
     class Dark{
@@ -35,8 +36,9 @@ namespace dk{
         LayerStack          m_layerStack;
         bool                m_running{true};
         float               m_lastFrame{.0f};
-        Scope<VertexArray>  m_vertexArray;
+        Ref<VertexArray>    m_vertexArray;
         Ref<Shader>         m_shader;
+        OrthographicCamera  m_camera;
     private:
         static Dark* s_instance;
     };

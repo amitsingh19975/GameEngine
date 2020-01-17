@@ -1,6 +1,7 @@
 #include "dark/renderer/Shader.hpp"
 #include "dark/core/Core.hpp"
 #include "dark/core/Log.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 namespace dk{
     Shader::Shader(std::string_view vertex, std::string_view fragment){
@@ -96,6 +97,11 @@ namespace dk{
 
     void Shader::BindAttribute(int location, std::string_view name) const noexcept{
         glBindAttribLocation(m_renderID,location,name.data());
+    }
+
+    void Shader::UploadUniformMat4(std::string_view name, glm::mat4 const& uniform) const noexcept{
+        auto location = glGetUniformLocation(m_renderID, name.data());
+        glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr( uniform ) );
     }
 
 }

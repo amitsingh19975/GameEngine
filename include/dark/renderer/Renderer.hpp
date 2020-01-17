@@ -1,17 +1,29 @@
 #if !defined(DK_RENDER_HPP)
 #define DK_RENDER_HPP
 
+#include "dark/renderer/RendererAPI.hpp"
+#include "dark/renderer/OrthographicCamera.hpp"
+#include "dark/renderer/Shader.hpp"
+
 namespace dk{
 
-    enum class RendererAPI{
-        None = 0, 
-        OpenGL
-    };
-
     struct Renderer{
-        inline static RendererAPI GetAPI() noexcept { return s_RendererAPI; }
+        
+        Renderer() = default;
+
+        static void BeginScene(OrthographicCamera& camera);
+        static void EndScene();
+
+        static void Submit( Ref<Shader> const& shader, Ref<VertexArray> const& vertexArray );
+
+        inline static RendererAPI::API GetAPI() noexcept { return RendererAPI::GetAPI(); }
+
     private:
-        static RendererAPI s_RendererAPI;
+        struct SceneData{
+            glm::mat4 viewProjectionMatrix;
+        };
+
+        static Ref<SceneData> s_sceneData;
     };
     
 }

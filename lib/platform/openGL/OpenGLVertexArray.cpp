@@ -49,7 +49,7 @@ namespace dk {
             glVertexAttribPointer(idx, el.GetComponentCount() 
                 ,ShaderDataTypeToOpenGLType(el.type) 
                 ,el.normalized ? GL_TRUE : GL_FALSE 
-                ,layout.GetStride() 
+                , layout.GetStride() 
                 ,reinterpret_cast<const void*>(el.offset)
             );
             ++idx;
