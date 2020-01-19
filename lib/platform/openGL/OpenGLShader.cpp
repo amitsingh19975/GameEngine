@@ -1,6 +1,7 @@
 #include "dark/platform/openGL/OpenGLShader.hpp"
 #include "dark/core/Core.hpp"
 #include <fstream>
+#include <filesystem>
 
 namespace dk{
 
@@ -13,7 +14,9 @@ namespace dk{
         }
     }
 
-    OpenGLShader::OpenGLShader( std::string_view path ){
+    OpenGLShader::OpenGLShader( std::string_view path )
+        : m_name( std::filesystem::path(path).stem() )
+    {
         std::ifstream file(path.data(), std::ios::binary);
         if( file.bad() ){
             CoreLog::Error("OpenGLShader::OpenGLShader: file ( {0} ) not found", path);
@@ -26,7 +29,24 @@ namespace dk{
         }   
     }
 
-    OpenGLShader::OpenGLShader(std::string_view vertex, std::string_view fragment){
+    OpenGLShader::OpenGLShader( std::string_view name, std::string_view path )
+        : m_name( name )
+    {
+        std::ifstream file(path.data(), std::ios::binary);
+        if( file.bad() ){
+            CoreLog::Error("OpenGLShader::OpenGLShader: file ( {0} ) not found", path);
+        }else{
+            std::stringstream ss;
+            ss << file.rdbuf();
+            file.close();
+            auto shaders = PreProcess(ss);
+            Compile(shaders);
+        }   
+    }
+
+    OpenGLShader::OpenGLShader(std::string_view name, std::string_view vertex, std::string_view fragment)
+        : m_name(name)
+    {
         Compile({
             {GL_VERTEX_SHADER, std::string(vertex)}, 
             {GL_FRAGMENT_SHADER, std::string(fragment)}
@@ -151,7 +171,7 @@ namespace dk{
         }
         
         glLinkProgram(m_renderID);
-        
+
         if( !check_program( m_renderID ) ){
             for(auto const& id : shaderIDs ){
                 glDeleteShader(id);

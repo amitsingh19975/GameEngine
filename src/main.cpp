@@ -9,26 +9,7 @@ struct ExLayer : dk::Layer{
         : Layer("ExLayer")
         , m_camera(-1.6f, 1.6f, -1.f, 1.f)
     {
-        std::string vertexSrc = R"(
-            attribute vec3 a_Pos;
-            attribute vec4 a_Col;
-            // varying vec4 v_Col;
-
-            uniform mat4 u_ViewProjection;
-            uniform mat4 u_Transform;
-
-            void main(){
-                // v_Col = a_Col;
-                gl_Position = u_ViewProjection * u_Transform* vec4(a_Pos ,1.0);
-            }
-        )";
-
-        std::string fragmentSrc = R"(
-            uniform vec3 u_Color;
-            void main(){
-                gl_FragColor = vec4( u_Color,1);
-            }
-        )";
+       
 
 
         typename dk::VertexBuffer::value_type vertices[5 * 4] = {
@@ -48,8 +29,10 @@ struct ExLayer : dk::Layer{
             Deref(vertexBuffer).SetLayout(lay);
         }
 
-        m_shader = dk::Shader::Create(vertexSrc, fragmentSrc);
-        m_Tshader = dk::Shader::Create("../assets/shaders/Texture.glsl");
+        m_shaderLibrary.LoadFolder("../assets/shaders");
+        
+        auto Tshader = m_shaderLibrary.Get("Texture");
+        auto SqShader = m_shaderLibrary.Get("SquareShader");
 
         dk::ClientLog::Info("Shader Compiled");
 
@@ -72,14 +55,12 @@ struct ExLayer : dk::Layer{
         // Deref(m_TvertexArray).SetIndexBuffer(TindexBuffer);
         dk::ClientLog::Info("vertex array is initialization is completed");
         
-        dk::ClientLog::Info("File Path: {0}","../assets/textures/space_ship.jpg");
-        
         m_texture1 = dk::Texture2D::Create("../assets/textures/checker_board.png");
-        m_texture2 = dk::Texture2D::Create("../assets/textures/space_ship.jpg");
+        m_texture2 = dk::Texture2D::Create("../assets/textures/space_ship.png");
         
-        dk::Deref(m_Tshader).Bind();
-        dk::Deref(m_Tshader).GetShader<dk::OpenGLShader>().UploadUniform("u_Texture",0);
-        // Deref(m_vertexArray).BindAttribute(m_shader);
+        dk::Deref(Tshader).Bind();
+        dk::Deref(Tshader).GetShader<dk::OpenGLShader>().UploadUniform("u_Texture",0);
+        // Deref(m_vertexArray).BindAttribute(SqShader);
 
     }
 
@@ -115,10 +96,11 @@ struct ExLayer : dk::Layer{
 
         // glm::vec4 redColor(0.8f, 0.2f, 0.3f, 1.0f);
         // glm::vec4 blueColor(0.2f, 0.2f, 0.8f, 1.0f);
-        
-        dk::Deref(m_shader).Bind();
-        dk::Deref(m_shader).GetShader<dk::OpenGLShader>().UploadUniform("u_Color",m_sq_col);
-        dk::Deref(m_Tshader).GetShader<dk::OpenGLShader>().UploadUniform("u_TPos",m_Tpos);
+        auto Tshader = m_shaderLibrary.Get("Texture");
+        auto SqShader = m_shaderLibrary.Get("SquareShader");
+        dk::Deref(SqShader).Bind();
+        dk::Deref(SqShader).GetShader<dk::OpenGLShader>().UploadUniform("u_Color",m_sq_col);
+        dk::Deref(Tshader).GetShader<dk::OpenGLShader>().UploadUniform("u_TPos",m_Tpos);
 
         dk::Renderer::BeginScene(m_camera);
             glm::mat4 sc = glm::scale(glm::mat4(1.f), glm::vec3(.05f));
@@ -128,19 +110,19 @@ struct ExLayer : dk::Layer{
                 for (auto x = 0; x < sz; ++x){
                     glm::vec3 pos(x * .11f, y * .11f, 0.f);
                     glm::mat4 transform = glm::translate(glm::mat4(1.f),pos) * sc;
-                    dk::Renderer::Submit(m_shader,m_vertexArray,transform);
+                    dk::Renderer::Submit(SqShader,m_vertexArray,transform);
                 }
             }
             
             dk::Deref( m_texture1 ).Bind();
             
-            dk::Renderer::Submit(m_Tshader,m_vertexArray,
+            dk::Renderer::Submit(Tshader,m_vertexArray,
                 glm::scale(glm::mat4(1.f), glm::vec3(1.f))
             );
 
             dk::Deref( m_texture2 ).Bind();
 
-            dk::Renderer::Submit(m_Tshader,m_vertexArray,
+            dk::Renderer::Submit(Tshader,m_vertexArray,
                 glm::scale(glm::mat4(1.f), glm::vec3(m_scale)) * 
                 glm::translate(glm::mat4(1), glm::vec3(-0.45,-0.25,0))
             );
@@ -187,11 +169,10 @@ private:
     glm::vec3                   m_sq_col{0.2f,0.8f,0.3f};
     dk::OrthographicCamera      m_camera;
     dk::Ref<dk::VertexArray>    m_vertexArray;
-    dk::Ref<dk::Shader>         m_shader;
     dk::Ref<dk::VertexArray>    m_TvertexArray;
-    dk::Ref<dk::Shader>         m_Tshader;
     dk::Ref<dk::Texture2D>      m_texture1;
     dk::Ref<dk::Texture2D>      m_texture2;
+    dk::ShaderLibrary           m_shaderLibrary;
 };
 
 

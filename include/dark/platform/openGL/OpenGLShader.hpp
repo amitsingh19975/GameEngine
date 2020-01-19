@@ -11,7 +11,9 @@ namespace dk{
         
         OpenGLShader( std::string_view path );
 
-        OpenGLShader( std::string_view vertex, std::string_view fragment );
+        OpenGLShader( std::string_view name, std::string_view vertex, std::string_view fragment );
+        
+        OpenGLShader( std::string_view name, std::string_view path );
         
         virtual ~OpenGLShader();
 
@@ -19,6 +21,10 @@ namespace dk{
 
         void Bind() const noexcept override;
         void UnBind() const noexcept override;
+
+        inline std::string const& GetName() const noexcept override {
+            return m_name;
+        }
 
         template<typename T>
         void UploadUniform( std::string_view name, T const& uniformData) noexcept{
@@ -65,8 +71,9 @@ namespace dk{
     void Compile( std::unordered_map<GLenum, std::string> const& shaders );
 
     private:
-        uint32_t                                   m_renderID;
-        std::unordered_map<std::string, uint32_t>  m_location;
+        uint32_t                                    m_renderID;
+        std::unordered_map<std::string, uint32_t>   m_location;
+        std::string                                 m_name;
     };
 }
 
