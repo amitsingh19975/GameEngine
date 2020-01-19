@@ -1,4 +1,5 @@
 #include "dark/platform/openGL/OpenGLVertexArray.hpp" 
+#include "dark/platform/openGL/OpenGLShader.hpp" 
 
 namespace dk {
 
@@ -73,7 +74,7 @@ namespace dk {
         CoreAssert(idx >= 0 && idx < m_vertexBuffer.size(), "OpenGLVertexArray::BindAttribute : Out of bound access");
         auto layout = Deref(m_vertexBuffer[idx]).GetLayout();
         for( auto const& el :  layout ){
-            Deref(shader).BindAttribute(el.offset,el.name);
+            Deref(shader).GetShader<OpenGLShader>().BindAttribute(el.offset,el.name);
         }
     }
 

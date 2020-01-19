@@ -124,6 +124,7 @@ namespace dk {
         },&m_data);
         CoreLog::Info("OpenGL Version: {0}", glGetString(GL_VERSION));
         CoreLog::Info("Shader Version: {0}", glGetString(GL_SHADING_LANGUAGE_VERSION));
+
         SetVSync(true);
     }
 

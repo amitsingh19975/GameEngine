@@ -13,8 +13,11 @@ namespace dk {
             None = 0, OpenGL
         };
 
+
         virtual ~RendererAPI() {}
 
+        virtual void Init() = 0;
+        
         virtual void SetClearColor( glm::vec4 const& color) noexcept = 0;
         virtual void Clear() noexcept = 0;
 

@@ -10,6 +10,10 @@ namespace dk{
         
         RenderCommand() = default;
         
+        inline static void Init(){
+            Deref( s_rendererAPI ).Init();
+        }
+
         inline static void SetClearColor( glm::vec4 const& color) noexcept{
             Deref( s_rendererAPI ).SetClearColor(color);
         }

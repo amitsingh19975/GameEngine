@@ -6,15 +6,17 @@
 #include "dark/renderer/Shader.hpp"
 
 namespace dk{
-
+    
     struct Renderer{
         
         Renderer() = default;
 
+        static void Init();
+
         static void BeginScene(OrthographicCamera& camera);
         static void EndScene();
 
-        static void Submit( Ref<Shader> const& shader, Ref<VertexArray> const& vertexArray );
+        static void Submit( Ref<Shader> const& shader, Ref<VertexArray> const& vertexArray, glm::mat4 const& transform = glm::mat4(1.f) );
 
         inline static RendererAPI::API GetAPI() noexcept { return RendererAPI::GetAPI(); }
 

@@ -13,6 +13,8 @@ namespace dk{
         CoreAssert(s_instance == nullptr,"Application is already initialized");
         s_instance = this;
         Deref(m_window).SetEventCallback(std::bind(&Dark::onEvent,this,std::placeholders::_1));
+        Renderer::Init();
+        
         PushOverlay(m_imGuiLayer);
         
     }
@@ -47,7 +49,7 @@ namespace dk{
 
             Deref(m_imGuiLayer).Begin();
             for( auto& layer : m_layerStack ){
-                Deref(layer).ImGuiRenderer();
+                Deref(layer).ImGuiRender();
             }
             Deref(m_imGuiLayer).End();
             Deref(m_window).OnUpdate();

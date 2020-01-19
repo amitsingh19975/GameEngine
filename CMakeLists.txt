@@ -16,14 +16,15 @@ project(GameEngine  VERSION 1.0
 set(GLAD_PATH "${PROJECT_SOURCE_DIR}/vendor/glad/include")
 set(SPDLOG_PATH "${PROJECT_SOURCE_DIR}/vendor/spdlog/include")
 set(IMGUI_PATH "${PROJECT_SOURCE_DIR}/vendor/imgui")
+set(STB_PATH "${PROJECT_SOURCE_DIR}/vendor/stb")
 set(GLM_PATH "${PROJECT_SOURCE_DIR}/vendor/glm")
-set(INCLUDE_PATH "-I/usr/local/include -I${GLAD_PATH} -I${SPDLOG_PATH} -I${IMGUI_PATH} -I${GLM_PATH}")
+set(INCLUDE_PATH "-I/usr/local/include -I${GLAD_PATH} -I${SPDLOG_PATH} -I${IMGUI_PATH} -I${GLM_PATH} -I{STB_PATH}")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS 
     "-Wall -Wextra ${INCLUDE_PATH}")
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/vendor/cmake_module)
-include_directories(include ${GLAD_PATH} ${SPDLOG_PATH} ${IMGUI_PATH} ${GLM_PATH})
+include_directories(include ${GLAD_PATH} ${SPDLOG_PATH} ${IMGUI_PATH} ${GLM_PATH} ${STB_PATH})
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set(CMAKE_C_EXTENSIONS OFF)
@@ -40,7 +41,8 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # find_file(SDL2_INCLUDE_DIR NAME SDL.h HINTS SDL2)
     # find_library(SDL2_LIBRARY NAME SDL2)
     find_package(SDL2 REQUIRED)
-    include_directories(/usr/local/include/SDL2)
+    include_directories(${SDL2_INCLUDE_DIRS})
+
     # find_package(GLEW REQUIRED)
     # include_directories(${GLEW_INCLUDE_DIRS})
     find_package(OpenGL REQUIRED)

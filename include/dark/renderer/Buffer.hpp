@@ -140,7 +140,9 @@ namespace dk{
         virtual BufferLayout const& GetLayout() const noexcept= 0;
         virtual void SetLayout( BufferLayout const& layout) noexcept= 0;
 
-        static Ref<VertexBuffer> Create( float* vertices, uint32_t size );
+        static Ref<VertexBuffer> Create( value_type* vertices, uint32_t size );
+        
+        static Ref<VertexBuffer> Create( value_type const (&vertices)[] );
 
     };
 
@@ -159,6 +161,8 @@ namespace dk{
         virtual value_type GetCount() const noexcept = 0;
         
         static Ref<IndexBuffer> Create( value_type* indices, count_type count );
+        
+        static Ref<IndexBuffer> Create( value_type const (&indices)[] );
     };
 }
 

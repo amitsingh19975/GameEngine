@@ -10,9 +10,11 @@
 #include "dark/renderer/Buffer.hpp"
 #include "dark/renderer/GraphicsContext.hpp"
 #include "dark/renderer/RenderCommand.hpp"
+#include "dark/renderer/Texture.hpp"
 #include "dark/renderer/Shader.hpp"
 #include "dark/renderer/VertexArray.hpp"
 #include "dark/platform/WindowsInput.hpp"
+#include "imgui.h"
 
 #include "dark/core/EntryPoint.hpp"
 

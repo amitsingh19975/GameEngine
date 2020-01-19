@@ -40,7 +40,7 @@ namespace dk{
         ImGui::DestroyContext();
     }
 
-    void ImGuiLayer::ImGuiRenderer() {
+    void ImGuiLayer::ImGuiRender() {
         static bool show = true;
         ImGui::ShowDemoWindow(&show);
     }

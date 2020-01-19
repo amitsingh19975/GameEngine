@@ -2,6 +2,7 @@
 #define DK_OPENGL_BUFFER_HPP
 
 #include "dark/renderer/Buffer.hpp"
+#include "dark/renderer/Renderer.hpp"
 
 namespace dk {
     
@@ -22,6 +23,16 @@ namespace dk {
 
         inline BufferLayout const& GetLayout() const noexcept override { return m_layout; }
         inline void SetLayout( BufferLayout const& layout) noexcept override { m_layout = layout;}
+
+
+        template<size_t N>
+        static Ref<VertexBuffer> Create( value_type (&vertices)[N] ){
+            switch (Renderer::GetAPI()){
+                case RendererAPI::API::None: CoreAssert(false,"VertexBuffer::Create : RendererAPI::None is currently not supported");
+                case RendererAPI::API::OpenGL : return CreateRef<OpenGLVertexBuffer>(vertices, N * sizeof(float) );
+                default : CoreAssert(false,"VertexBuffer::Create : Unknown RendererAPI"); 
+            }
+        }
 
     private:
         renderer_id_type m_rendererID;
@@ -44,6 +55,15 @@ namespace dk {
         virtual void UnBind() const noexcept override;
 
         inline uint32_t GetCount() const noexcept override{ return m_count; }
+
+        template<size_t N>
+        static Ref<IndexBuffer> Create( value_type (&indices)[N] ){
+            switch (Renderer::GetAPI()){
+                case RendererAPI::API::None: CoreAssert(false,"VertexBuffer::Create : RendererAPI::None is currently not supported");
+                case RendererAPI::API::OpenGL : return CreateRef<OpenGLIndexBuffer>(indices,N);
+                default : CoreAssert(false,"VertexBuffer::Create : Unknown RendererAPI"); 
+            }
+        }
 
     private:
         renderer_id_type m_rendererID;

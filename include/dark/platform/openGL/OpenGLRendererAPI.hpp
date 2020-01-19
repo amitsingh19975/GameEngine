@@ -7,6 +7,8 @@ namespace dk{
     struct OpenGLRendererAPI : RendererAPI{
         OpenGLRendererAPI() = default;
         virtual ~OpenGLRendererAPI(){}
+
+        void Init() override;
         void SetClearColor( glm::vec4 const& color) noexcept override;
         void Clear() noexcept override;
         void DrawIndexed( Ref<VertexArray> const& vertexArray) noexcept override;

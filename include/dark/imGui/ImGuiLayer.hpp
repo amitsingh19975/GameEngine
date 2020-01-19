@@ -13,7 +13,7 @@ namespace dk{
 
         void OnAttach() override;
         void OnDetach() override;
-        void ImGuiRenderer() override;
+        void ImGuiRender() override;
 
         void Begin();
         void End();
