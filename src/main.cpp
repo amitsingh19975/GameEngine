@@ -7,11 +7,8 @@
 struct ExLayer : dk::Layer{
     ExLayer() 
         : Layer("ExLayer")
-        , m_camera(-1.6f, 1.6f, -1.f, 1.f)
+        , m_camera(1.6,true)
     {
-       
-
-
         typename dk::VertexBuffer::value_type vertices[5 * 4] = {
             0.0f, 0.0f, 0.0f, 0,0,
             1.f,  0.0f, 0.0f, 1,0,
@@ -30,7 +27,7 @@ struct ExLayer : dk::Layer{
         }
 
         m_shaderLibrary.LoadFolder("../assets/shaders");
-        
+
         auto Tshader = m_shaderLibrary.Get("Texture");
         auto SqShader = m_shaderLibrary.Get("SquareShader");
 
@@ -69,30 +66,21 @@ struct ExLayer : dk::Layer{
         dk::RenderCommand::SetClearColor(0.1f,.1f,.1f, 1.f);
         dk::RenderCommand::Clear();
 
-        if( dk::WindowsInput::IsKeyPressed(dk::DK_KEY_S) ){
-            m_pos[1] -= m_cameraSpeed * ts; 
-        }else if ( dk::WindowsInput::IsKeyPressed(dk::DK_KEY_A) ){
-            m_pos[0] += m_cameraSpeed * ts; 
-        }else if ( dk::WindowsInput::IsKeyPressed(dk::DK_KEY_W) ){
-            m_pos[1] += m_cameraSpeed * ts;
-        }else if (dk::WindowsInput::IsKeyPressed(dk::DK_KEY_D)){
-            m_pos[0] -= m_cameraSpeed * ts;
-        }else if( dk::WindowsInput::IsKeyPressed(dk::DK_KEY_R) ){
-            m_rotate += m_rotationSpeed * ts;
-        }else if (dk::WindowsInput::IsKeyPressed(dk::DK_KEY_L)){
-            m_rotate -= m_rotationSpeed * ts;
-        }if( dk::WindowsInput::IsKeyPressed(dk::DK_KEY_UP) ){
-            m_Tpos[1] -= m_cameraSpeed * ts; 
-        }else if ( dk::WindowsInput::IsKeyPressed(dk::DK_KEY_LEFT) ){
-            m_Tpos[0] += m_cameraSpeed * ts; 
-        }else if ( dk::WindowsInput::IsKeyPressed(dk::DK_KEY_DOWN) ){
-            m_Tpos[1] += m_cameraSpeed * ts;
-        }else if (dk::WindowsInput::IsKeyPressed(dk::DK_KEY_RIGHT)){
-            m_Tpos[0] -= m_cameraSpeed * ts;
-        }
-
-        m_camera.SetPostion(m_pos);
-        m_camera.SetRotation(m_rotate);
+        // if( dk::WindowsInput::IsKeyPressed(dk::DK_KEY_S) ){
+        //     m_pos[1] -= m_cameraSpeed * ts; 
+        // }else if ( dk::WindowsInput::IsKeyPressed(dk::DK_KEY_A) ){
+        //     m_pos[0] += m_cameraSpeed * ts; 
+        // }else if ( dk::WindowsInput::IsKeyPressed(dk::DK_KEY_W) ){
+        //     m_pos[1] += m_cameraSpeed * ts;
+        // }else if (dk::WindowsInput::IsKeyPressed(dk::DK_KEY_D)){
+        //     m_pos[0] -= m_cameraSpeed * ts;
+        // }else if( dk::WindowsInput::IsKeyPressed(dk::DK_KEY_R) ){
+        //     m_rotate += m_rotationSpeed * ts;
+        // }else if (dk::WindowsInput::IsKeyPressed(dk::DK_KEY_L)){
+        //     m_rotate -= m_rotationSpeed * ts;
+        // }
+        
+        m_camera.OnUpdate(ts);
 
         // glm::vec4 redColor(0.8f, 0.2f, 0.3f, 1.0f);
         // glm::vec4 blueColor(0.2f, 0.2f, 0.8f, 1.0f);
@@ -102,7 +90,7 @@ struct ExLayer : dk::Layer{
         dk::Deref(SqShader).GetShader<dk::OpenGLShader>().UploadUniform("u_Color",m_sq_col);
         dk::Deref(Tshader).GetShader<dk::OpenGLShader>().UploadUniform("u_TPos",m_Tpos);
 
-        dk::Renderer::BeginScene(m_camera);
+        dk::Renderer::BeginScene(m_camera.GetCamera());
             glm::mat4 sc = glm::scale(glm::mat4(1.f), glm::vec3(.05f));
             auto sz = 10;
             // bool alter = false;
@@ -140,34 +128,32 @@ struct ExLayer : dk::Layer{
     }
 
     void OnEvent( dk::EventBase& e) override{
-        dk::EventDispatcher dis(e);
-        dis.Dispatch<dk::MouseScrolledEvent>([&](dk::MouseScrolledEvent const& evt){
-            auto [x,y] = std::make_pair( evt.GetXOffset(), evt.GetYOffset() );
-            if( x > 0 ){
-                m_pos[0] += m_cameraSpeed * m_ts;
-            }else if ( x < 0 ){
-                m_pos[0] -= m_cameraSpeed * m_ts;
-            }
+        // dk::EventDispatcher dis(e);
+        // dis.Dispatch<dk::MouseScrolledEvent>([&](dk::MouseScrolledEvent const& evt){
+        //     auto [x,y] = std::make_pair( evt.GetXOffset(), evt.GetYOffset() );
+        //     // if( x > 0 ){
+        //     //     m_pos[0] += m_cameraSpeed * m_ts;
+        //     // }else if ( x < 0 ){
+        //     //     m_pos[0] -= m_cameraSpeed * m_ts;
+        //     // }
             
-            if( y > 0 ){
-                m_pos[1] += m_cameraSpeed * m_ts;
-            }else if ( y < 0 ){
-                m_pos[1] -= m_cameraSpeed * m_ts;
-            }
-            return false;
-        });
+        //     // if( y > 0 ){
+        //     //     m_pos[1] += m_cameraSpeed * m_ts;
+        //     // }else if ( y < 0 ){
+        //     //     m_pos[1] -= m_cameraSpeed * m_ts;
+        //     // }
+        //     return false;
+        // });
+        m_camera.OnEvent(e);
     }
 
 private:
     glm::vec3                   m_pos{0.5,0.5,0};
     glm::vec2                   m_Tpos{1,0};
     float                       m_scale{1};
-    float                       m_rotate{0};
     float                       m_ts{0};
-    float                       m_cameraSpeed{5};
-    float                       m_rotationSpeed{180}; 
     glm::vec3                   m_sq_col{0.2f,0.8f,0.3f};
-    dk::OrthographicCamera      m_camera;
+    dk::OrthographicCameraController      m_camera;
     dk::Ref<dk::VertexArray>    m_vertexArray;
     dk::Ref<dk::VertexArray>    m_TvertexArray;
     dk::Ref<dk::Texture2D>      m_texture1;

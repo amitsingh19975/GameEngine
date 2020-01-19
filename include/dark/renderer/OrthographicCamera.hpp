@@ -8,9 +8,12 @@ namespace dk {
 
         OrthographicCamera(float left, float right, float bottom, float top);
         
+        void SetProjection(float left, float right, float bottom, float top);
+
         constexpr auto& GetProjectionMatrix() const noexcept { return m_projectionMatrix; } 
         constexpr auto& GetViewMatrix() const noexcept { return m_viewMatrix; } 
         constexpr auto& GetViewProjectionMatrix() const noexcept { return m_viewProjectionMatrix;} 
+        
         constexpr auto& GetPosition() noexcept { return m_position; } 
         constexpr auto& GetRotation() noexcept { return m_rotation; } 
 
