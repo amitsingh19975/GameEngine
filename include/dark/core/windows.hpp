@@ -25,7 +25,7 @@ namespace dk::detail{
         using EventCallbackFn = std::function<void(EventBase&)>;
 
         virtual ~WindowBase() = default;
-        virtual void OnUpdate() =  0;
+        virtual void OnUpdate(bool minimized = false) =  0;
         virtual uint32_t GetWidth() const noexcept = 0;
         virtual uint32_t GetHeight() const noexcept = 0;
 
@@ -50,7 +50,7 @@ namespace dk{
         Window( WindowsProps const& props );
         virtual ~Window();
 
-        void OnUpdate() override;
+        void OnUpdate(bool minimized) override;
 
         inline uint32_t GetWidth() const noexcept override{ return m_data.Width;}
         inline uint32_t GetHeight() const noexcept override{ return m_data.Height;}
@@ -87,9 +87,9 @@ namespace dk{
             std::string Title;
             uint32_t Width;
             uint32_t Height;
-            uint32_t windowId;
             bool VSync;
-
+            SDL_Window* window;
+            
             EventCallbackFn EventCallback;
         };
 

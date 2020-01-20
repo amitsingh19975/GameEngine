@@ -12,6 +12,7 @@ namespace dk{
         Renderer() = default;
 
         static void Init();
+        static void OnWindowResize(uint32_t width, uint32_t height) noexcept;
 
         static void BeginScene(OrthographicCamera& camera);
         static void EndScene();

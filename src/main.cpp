@@ -2,7 +2,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "dark/platform/openGL/OpenGLShader.hpp"
 #include "dark/platform/openGL/OpenGLBuffer.hpp"
-// #include "dark/platform/openGL/OpenGLTexture.hpp"
+#include "sandBox2D.hpp"
  
 struct ExLayer : dk::Layer{
     ExLayer() 
@@ -56,7 +56,7 @@ struct ExLayer : dk::Layer{
         m_texture2 = dk::Texture2D::Create("../assets/textures/space_ship.png");
         
         dk::Deref(Tshader).Bind();
-        dk::Deref(Tshader).GetShader<dk::OpenGLShader>().UploadUniform("u_Texture",0);
+        dk::Deref(Tshader).StaticCast<dk::OpenGLShader>().UploadUniform("u_Texture",0);
         // Deref(m_vertexArray).BindAttribute(SqShader);
 
     }
@@ -87,8 +87,8 @@ struct ExLayer : dk::Layer{
         auto Tshader = m_shaderLibrary.Get("Texture");
         auto SqShader = m_shaderLibrary.Get("SquareShader");
         dk::Deref(SqShader).Bind();
-        dk::Deref(SqShader).GetShader<dk::OpenGLShader>().UploadUniform("u_Color",m_sq_col);
-        dk::Deref(Tshader).GetShader<dk::OpenGLShader>().UploadUniform("u_TPos",m_Tpos);
+        dk::Deref(SqShader).StaticCast<dk::OpenGLShader>().UploadUniform("u_Color",m_sq_col);
+        dk::Deref(Tshader).StaticCast<dk::OpenGLShader>().UploadUniform("u_TPos",m_Tpos);
 
         dk::Renderer::BeginScene(m_camera.GetCamera());
             glm::mat4 sc = glm::scale(glm::mat4(1.f), glm::vec3(.05f));
@@ -128,7 +128,7 @@ struct ExLayer : dk::Layer{
     }
 
     void OnEvent( dk::EventBase& e) override{
-        // dk::EventDispatcher dis(e);
+        dk::EventDispatcher dis(e);
         // dis.Dispatch<dk::MouseScrolledEvent>([&](dk::MouseScrolledEvent const& evt){
         //     auto [x,y] = std::make_pair( evt.GetXOffset(), evt.GetYOffset() );
         //     // if( x > 0 ){
@@ -145,6 +145,11 @@ struct ExLayer : dk::Layer{
         //     return false;
         // });
         m_camera.OnEvent(e);
+
+        // dis.Dispatch<dk::WindowResizeEvent>([](dk::WindowResizeEvent& e){
+        //     float zoom = (float)
+        // });
+
     }
 
 private:
@@ -165,7 +170,8 @@ private:
 struct Sandbox : public dk::Dark{
     Sandbox() {
         
-        PushLayer(dk::CreateRef<ExLayer>());
+        // PushLayer(dk::CreateRef<ExLayer>());
+        PushLayer(dk::CreateRef<SandBox2D>(GetWidth(), GetHeight()));
     }
 
     ~Sandbox(){

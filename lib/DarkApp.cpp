@@ -29,6 +29,18 @@ namespace dk{
             std::bind(&Dark::onWindowClose,this,std::placeholders::_1)
         );
         
+        disp.Dispatch<WindowResizeEvent>([&](WindowResizeEvent& e){
+            m_minimized = false;
+            
+            if( ( e.GetHeight() == 0 ) || ( e.GetWidth() == 0) ){
+                m_minimized = true;
+            }else{
+                Renderer::OnWindowResize(e.GetWidth(),e.GetHeight());
+            }
+
+            return false;
+        });
+        
         std::for_each(m_layerStack.rbegin(), m_layerStack.rend(),[&e]( auto& layer) {
             Deref(layer).OnEvent(e);
             if( e.Handled ) return;
@@ -42,17 +54,21 @@ namespace dk{
             float time = SDL_GetTicks()/ 1000.f;
             Timestep ts = time - m_lastFrame;
             m_lastFrame = time;
-
-            for( auto& layer : m_layerStack ){
-                Deref(layer).OnUpdate(ts);
+            if( !m_minimized ){
+                for( auto& layer : m_layerStack ){
+                    Deref(layer).OnUpdate(ts);
+                }
             }
 
-            Deref(m_imGuiLayer).Begin();
-            for( auto& layer : m_layerStack ){
-                Deref(layer).ImGuiRender();
+            if constexpr (Config::is_debug){
+                Deref(m_imGuiLayer).Begin();
+                    for( auto& layer : m_layerStack ){
+                        Deref(layer).ImGuiRender();
+                    }
+                Deref(m_imGuiLayer).End();
             }
-            Deref(m_imGuiLayer).End();
-            Deref(m_window).OnUpdate();
+
+            Deref(m_window).OnUpdate(m_minimized);
         }
         CoreLog::Error("Window Closed");
     }

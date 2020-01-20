@@ -13,13 +13,13 @@ namespace dk{
 
     void OrthographicCameraController::OnUpdate( Timestep ts ){
         if( WindowsInput::IsKeyPressed(dk::DK_KEY_W) ){
-            m_cameraPosition[1] -= m_cameraSpeed * ts; 
+            m_cameraPosition.y -= m_cameraSpeed * ts; 
         }else if ( WindowsInput::IsKeyPressed(dk::DK_KEY_A) ){
-            m_cameraPosition[0] += m_cameraSpeed * ts; 
+            m_cameraPosition.x += m_cameraSpeed * ts; 
         }else if ( WindowsInput::IsKeyPressed(dk::DK_KEY_S) ){
-            m_cameraPosition[1] += m_cameraSpeed * ts;
+            m_cameraPosition.y += m_cameraSpeed * ts;
         }else if ( WindowsInput::IsKeyPressed(dk::DK_KEY_D)){
-            m_cameraPosition[0] -= m_cameraSpeed * ts;
+            m_cameraPosition.x -= m_cameraSpeed * ts;
         }
         
         if( m_rotation ){
@@ -44,6 +44,7 @@ namespace dk{
     bool OrthographicCameraController::OnMouseScrolled( MouseScrolledEvent& e){
         m_zoomLevel -= e.GetYOffset() * 0.25f;
         m_zoomLevel = std::max(m_zoomLevel,0.25f);
+        m_zoomLevel = std::max(m_zoomLevel,0.01f);
         m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
         return false;
     }

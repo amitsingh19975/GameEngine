@@ -22,8 +22,18 @@ namespace dk{
         void Bind() const noexcept override;
         void UnBind() const noexcept override;
 
+        inline void SetInt(std::string_view name, int data) override { UploadUniform(name,data);}
+        inline void SetFloat4(std::string_view name, glm::vec4 const& data) override { UploadUniform(name,data);}
+        inline void SetFloat3(std::string_view name, glm::vec3 const& data) override { UploadUniform(name,data);}
+        inline void SetFloat2(std::string_view name, glm::vec2 const& data) override { UploadUniform(name,data);}
+        inline void SetMat4(std::string_view name, glm::mat4 const& data) override { UploadUniform(name,data);}
+
         inline std::string const& GetName() const noexcept override {
             return m_name;
+        }
+
+        constexpr static OpenGLShader& StaticCast( Ref<Shader> const& shader ) noexcept {
+            return Deref( shader ).StaticCast<OpenGLShader>();
         }
 
         template<typename T>

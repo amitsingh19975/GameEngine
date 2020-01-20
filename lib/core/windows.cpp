@@ -14,7 +14,8 @@ namespace dk {
         m_data.Height = props.Height;
         m_data.Width = props.Width;
         m_data.Title = props.Title;
-        m_data.windowId = SDL_GetWindowID(this->m_win.get());
+        m_data.window = m_win.get();
+        // m_data.windowId = SDL_GetWindowID(this->m_win.get());
 
         SDL_GL_SetAttribute (SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
         SDL_GL_SetAttribute (SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -56,7 +57,19 @@ namespace dk {
                     // if( evt->window.windowID == props.windowId ){
                     auto& temp_w = evt->window;
                     switch(temp_w.event){
-                        case SDL_WINDOWEVENT_SIZE_CHANGED:{
+                        case SDL_WINDOW_MINIMIZED: 
+                        case SDL_WINDOWEVENT_HIDDEN:{
+                            auto e = WindowResizeEvent(0,0);
+                            props.EventCallback(e);
+                            break;
+                        }
+                        case SDL_WINDOW_MAXIMIZED: 
+                        case SDL_WINDOWEVENT_SHOWN: {
+                            auto e = WindowResizeEvent(props.Width,props.Height);
+                            props.EventCallback(e);
+                            break;
+                        }
+                        case SDL_WINDOWEVENT_RESIZED:{
                             props.Height = temp_w.data2;
                             props.Width = temp_w.data1;
                             auto e = WindowResizeEvent(props.Width,props.Height);
@@ -131,9 +144,12 @@ namespace dk {
     void Window::Shutdown(){
         m_win.~shared_ptr();
     }
-    void Window::OnUpdate(){
+    void Window::OnUpdate(bool minimized){
+        SDL_FlushEvent(SDL_WINDOWEVENT_RESIZED);
         SDL_PollEvent(&m_event);
-        m_ctx->SwapBuffers();
+        if( !minimized ){
+            m_ctx->SwapBuffers();
+        }
     }
 
     void Window::SetVSync( bool enabled ){

@@ -11,15 +11,20 @@ namespace dk{
 
         virtual void Bind() const noexcept = 0;
         virtual void UnBind() const noexcept = 0;
+        virtual void SetInt(std::string_view name, int) = 0;
+        virtual void SetFloat4(std::string_view name, glm::vec4 const&) = 0;
+        virtual void SetFloat3(std::string_view name, glm::vec3 const&) = 0;
+        virtual void SetFloat2(std::string_view name, glm::vec2 const&) = 0;
+        virtual void SetMat4(std::string_view name, glm::mat4 const&) = 0;
 
         virtual std::string const& GetName() const noexcept = 0;
 
         template< typename T>
-        constexpr auto& GetShader() noexcept{
+        constexpr auto& StaticCast() noexcept{
             return static_cast<T&>(*this);
         }
         template< typename T>
-        constexpr auto const& GetShader() const noexcept{
+        constexpr auto const& StaticCast() const noexcept{
             return static_cast<T const&>(*this);
         }
 

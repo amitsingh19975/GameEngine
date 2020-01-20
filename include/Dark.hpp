@@ -8,6 +8,7 @@
 #include "dark/imGui/ImGuiLayer.hpp"
 
 #include "dark/renderer/Renderer.hpp"
+#include "dark/renderer/Renderer2D.hpp"
 #include "dark/renderer/Buffer.hpp"
 #include "dark/renderer/GraphicsContext.hpp"
 #include "dark/renderer/RenderCommand.hpp"
@@ -16,10 +17,12 @@
 #include "dark/renderer/VertexArray.hpp"
 #include "dark/renderer/OrthographicCameraController.hpp"
 
+#include "dark/events/AppEvent.hpp"
+#include "dark/events/KeyboardEvent.hpp"
+#include "dark/events/MouseEvent.hpp"
+
 #include "dark/platform/WindowsInput.hpp"
 
 #include "imgui.h"
-
-#include "dark/core/EntryPoint.hpp"
 
 #endif // DK_DARK_HPP

@@ -22,6 +22,8 @@ namespace dk {
         virtual void Clear() noexcept = 0;
 
         virtual void DrawIndexed( Ref<VertexArray> const& vertexArray) noexcept = 0;
+        
+        virtual void SetViewport( uint32_t x, uint32_t y, uint32_t width, uint32_t height ) const noexcept = 0;
 
         inline static API GetAPI() noexcept { return s_API;}
     private:

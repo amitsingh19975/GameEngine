@@ -27,6 +27,8 @@ namespace dk{
             return *s_instance; 
         }
         constexpr base_window& GetWindow() const noexcept { return *m_window; }
+        constexpr uint32_t GetWidth() const noexcept { return Deref( m_window ).GetWidth(); }
+        constexpr uint32_t GetHeight() const noexcept { return Deref( m_window ).GetHeight(); }
 
     private:
         bool onWindowClose(WindowCloseEvent& e);
@@ -35,6 +37,7 @@ namespace dk{
         Ref<ImGuiLayer>     m_imGuiLayer;
         LayerStack          m_layerStack;
         bool                m_running{true};
+        bool                m_minimized{false};
         float               m_lastFrame{.0f};
     private:
         static Dark* s_instance;

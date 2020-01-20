@@ -40,6 +40,7 @@ namespace dk{
             static constexpr auto os = OS::MACOS;
         #endif
 
+        constexpr static auto frameScale = 2; //
     };
 
 }

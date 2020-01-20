@@ -74,7 +74,7 @@ namespace dk {
         CoreAssert(idx >= 0 && idx < m_vertexBuffer.size(), "OpenGLVertexArray::BindAttribute : Out of bound access");
         auto layout = Deref(m_vertexBuffer[idx]).GetLayout();
         for( auto const& el :  layout ){
-            Deref(shader).GetShader<OpenGLShader>().BindAttribute(el.offset,el.name);
+            Deref(shader).StaticCast<OpenGLShader>().BindAttribute(el.offset,el.name);
         }
     }
 

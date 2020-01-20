@@ -23,6 +23,10 @@ namespace dk{
         constexpr OrthographicCamera const& GetCamera() const noexcept{
             return m_camera;
         }
+
+        constexpr void SetZoomLevel( float z ) noexcept{
+            m_zoomLevel = z;
+        }
         
     private:
         bool OnMouseScrolled( MouseScrolledEvent& e);

@@ -14,7 +14,6 @@ void main(){
 #type fragment
 varying vec2 v_TextCoord;
 uniform sampler2D u_Texture;
-uniform vec2 u_TPos;
 void main(){
-    gl_FragColor = texture2D(u_Texture,v_TextCoord + u_TPos);
+    gl_FragColor = texture2D(u_Texture,v_TextCoord);
 }
